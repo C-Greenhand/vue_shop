@@ -12,8 +12,8 @@
 
       <el-row :gutter="20">
         <el-col :span="8">
-          <el-input placeholder="请输入内容">
-            <el-button slot="append" icon="el-icon-search"></el-button>
+          <el-input placeholder="请输入内容" v-model="queryInfo.query" clearable @clear="getUserList">
+            <el-button slot="append" icon="el-icon-search" @click="getUserList"></el-button>
           </el-input>
         </el-col>
 
@@ -31,7 +31,7 @@
         <el-table-column label="角色" prop="role_name"></el-table-column>
         <el-table-column label="状态">
           <template slot-scope="scope">
-            <el-switch v-model="scope.row.mg_state"></el-switch>
+            <el-switch v-model="scope.row.mg_state" @change="userStateChanged(scope.row)"></el-switch>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="180px">
@@ -90,7 +90,7 @@ export default {
         return this.$message.error("获取用户列表失败");
       this.userlist = res.data.users;
       this.total = res.data.total;
-      console.log(res);
+      //console.log(res);
     },
     //监听pagesize改变的事件
     handleSizeChange(newSize) {
@@ -101,6 +101,18 @@ export default {
     handleCurrentChange(newPage) {
       this.queryInfo.pagenum = newPage;
       this.getUserList();
+    },
+    //监听switch开关状态的改变
+    async userStateChanged(userinfo) {
+      console.log(userinfo);
+      const { data: res } = await this.$http.put(
+        "user/$(userinfo.id)/state/${userinfo.mg_state}"
+      );
+      if (res.meta.status !== 200) {
+        userinfo.mg_state = !userinfo.mg_state;
+        return this.$message.error("更新用户状态失败");
+      }
+      this.$message.success("更新用户状态成功");
     }
   }
 };
