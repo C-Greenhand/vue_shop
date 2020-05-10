@@ -237,7 +237,7 @@ export default {
     async userStateChanged(userinfo) {
       console.log(userinfo);
       const { data: res } = await this.$http.put(
-        "user/$(userinfo.id)/state/${userinfo.mg_state}"
+        `users/${userinfo.id}/state/${userinfo.mg_state}`
       );
       if (res.meta.status !== 200) {
         userinfo.mg_state = !userinfo.mg_state;
