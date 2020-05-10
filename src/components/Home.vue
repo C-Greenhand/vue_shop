@@ -2,7 +2,7 @@
   <el-container class="home_container">
     <!--头部区域-->
     <el-header>
-      <div>
+      <div class="title">
         <span>电商后台管理系统</span>
       </div>
       <el-button type="info" @click="logout">退出</el-button>
@@ -140,5 +140,9 @@ export default {
   text-align: center;
   letter-spacing: 0.2em;
   cursor: pointer;
+}
+
+.title {
+  color: #d8ddee;
 }
 </style>
