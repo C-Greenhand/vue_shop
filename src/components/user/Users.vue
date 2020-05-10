@@ -276,9 +276,24 @@ export default {
     },
     //修改用户并提交
     editUserInfo() {
-      this.$refs.editFormRef.validate(valid => {
+      this.$refs.editFormRef.validate(async valid => {
         if (!valid) return;
         //发起修改用户信息的数据请求
+        const { data: res } = await this.$http.put(
+          "users/" + this.editForm.id,
+          { email: this.editForm.email, mobile: this.editForm }
+        );
+        console.log(res.meta.status);
+        if (res.meta.status !== 200) {
+          return this.$message.error("更新用户信息失败");
+        }
+
+        //关闭对话框
+        this.editDialogVisible = false;
+        //刷新数据列表
+        this.getUserList();
+        //提示更新数据列表成功
+        this.$message.success("更新用户信息成功");
       });
     }
   }
