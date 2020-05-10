@@ -37,7 +37,12 @@
         <el-table-column label="操作" width="180px">
           <template slot-scope="scope">
             <!--修改按钮-->
-            <el-button type="primary" icon="el-icon-edit" size="mini"></el-button>
+            <el-button
+              type="primary"
+              icon="el-icon-edit"
+              size="mini"
+              @click="showEditDialog(scope.row.id)"
+            ></el-button>
             <!--删除按钮-->
             <el-button type="danger" icon="el-icon-delete" size="mini"></el-button>
             <!--分配角色按钮-->
@@ -84,6 +89,15 @@
       <span slot="footer" class="dialog-footer">
         <el-button @click="addDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="adduUser">确 定</el-button>
+      </span>
+    </el-dialog>
+
+    <!--修改用户对话框-->
+    <el-dialog title="修改用户" :visible.sync="editDialogVisible" width="50%">
+      <span>这是一段信息</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="editDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="editDialogVisible = false">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -159,7 +173,9 @@ export default {
           { required: true, message: "请输入手机号", trigger: "blur" },
           { validator: checkMobile, trigger: "blur" }
         ]
-      }
+      },
+      //控制修改用户对话框的显示与隐藏
+      editDialogVisible: false
     };
   },
   created() {
@@ -209,7 +225,7 @@ export default {
         //可以发起添加用户的网络请求
         const { data: res } = await this.$http.post("users", this.addForm);
         if (res.meta.status !== 201) {
-          this.$message.error("添加用户失败！");
+          return this.$message.error("添加用户失败！");
         }
         this.$message.success("添加用户成功！");
         //隐藏添加用户对话框
@@ -217,6 +233,14 @@ export default {
         //刷新用户列表
         this.getUserList();
       });
+    },
+    //展示编辑用户对话框
+    async showEditDialog(id) {
+      const { data: res } = await this.$http.get("users/" + id);
+      if (res.meta.status !== 201) {
+        return this.$message.error("查询用户信息失败！");
+      }
+      this.editDialogVisible = true;
     }
   }
 };
