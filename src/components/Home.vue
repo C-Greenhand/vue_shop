@@ -105,7 +105,7 @@ export default {
 }
 
 .el-header {
-  background-color: #373d41;
+  background-color: #333744;
   display: flex;
   justify-content: space-between;
   padding-left: 0;
@@ -143,6 +143,8 @@ export default {
 }
 
 .title {
-  color: #d8ddee;
+  color: #fff;
+  text-shadow: 1px 1px 0 rgb(36, 35, 129), -1px -1px 0 rgb(48, 105, 180);
+  margin-left: 10px;
 }
 </style>
