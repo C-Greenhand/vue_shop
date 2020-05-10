@@ -286,7 +286,7 @@ export default {
         //发起修改用户信息的数据请求
         const { data: res } = await this.$http.put(
           "users/" + this.editForm.id,
-          { email: this.editForm.email, mobile: this.editForm }
+          { email: this.editForm.email, mobile: this.editForm.mobile }
         );
         console.log(res.meta.status);
         if (res.meta.status !== 200) {
