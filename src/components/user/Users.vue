@@ -93,11 +93,26 @@
     </el-dialog>
 
     <!--修改用户对话框-->
-    <el-dialog title="修改用户" :visible.sync="editDialogVisible" width="50%">
-      <span>这是一段信息</span>
+    <el-dialog title="修改用户" :visible.sync="editDialogVisible" width="50%" @close="editDialogClosed">
+      <!--对话框主体部分-->
+      <el-form :model="editForm" :rules="editFormRules" ref="editFormRef" label-width="70px">
+        <el-form-item label="用户名">
+          <el-input v-model="editForm.username" disabled></el-input>
+        </el-form-item>
+
+        <el-form-item label="邮箱" prop="email">
+          <el-input v-model="editForm.email"></el-input>
+        </el-form-item>
+
+        <el-form-item label="手机号" prop="mobile">
+          <el-input v-model="editForm.mobile"></el-input>
+        </el-form-item>
+      </el-form>
+
+      <!--底部区域-->
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="editDialogVisible = false">确 定</el-button>
+        <el-button type="primary" @click="editUserInfo">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -175,7 +190,18 @@ export default {
         ]
       },
       //控制修改用户对话框的显示与隐藏
-      editDialogVisible: false
+      editDialogVisible: false,
+      editForm: {},
+      editFormRules: {
+        email: [
+          { required: true, message: "请输入邮箱", trigger: "blur" },
+          { validator: checkEmail, trigger: "blur" }
+        ],
+        mobile: [
+          { required: true, message: "请输入手机号", trigger: "blur" },
+          { validator: checkMobile, trigger: "blur" }
+        ]
+      }
     };
   },
   created() {
@@ -237,10 +263,23 @@ export default {
     //展示编辑用户对话框
     async showEditDialog(id) {
       const { data: res } = await this.$http.get("users/" + id);
-      if (res.meta.status !== 201) {
+      console.log(id);
+      if (res.meta.status !== 200) {
         return this.$message.error("查询用户信息失败！");
       }
+      this.editForm = res.data;
       this.editDialogVisible = true;
+    },
+    //监听修改用户对话框关闭事件
+    editDialogClosed() {
+      this.$refs.editFormRef.resetFields();
+    },
+    //修改用户并提交
+    editUserInfo() {
+      this.$refs.editFormRef.validate(valid => {
+        if (!valid) return;
+        //发起修改用户信息的数据请求
+      });
     }
   }
 };
